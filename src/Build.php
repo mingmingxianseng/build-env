@@ -34,7 +34,9 @@ class Build implements PluginInterface, EventSubscriberInterface
 
     /**
      * getComposerJson
+     *
      * @author chenmingming
+     *
      * @param null $key
      *
      * @return mixed|null
@@ -75,12 +77,12 @@ class Build implements PluginInterface, EventSubscriberInterface
 
         $config = $this->getComposerJson()['scripts']['build-nginx-env'];
 
-        $file   = $config['file'] ?: trim(getenv('CI_NGINX_ENV_FILE'));
+        $file = $config['file'] ?: trim(getenv('CI_NGINX_ENV_FILE'));
         if (empty($file)) {
             throw new \InvalidArgumentException("file must be input");
         }
         $prefix  = 'CI_' . strtoupper($env) . '_';
-        $content = "";
+        $content = "fastcgi_param APP_ENV {$env}" . PHP_EOL;
         foreach ($this->getEnvByPrefix($prefix) as $k => $v) {
             $content .= "fastcgi_param {$k} {$v};" . PHP_EOL;
         }
@@ -125,12 +127,12 @@ class Build implements PluginInterface, EventSubscriberInterface
 
         $config = $this->getComposerJson()['scripts']['build-shell-env'];
 
-        $file   = $config['file'] ?: trim(getenv('CI_SHELL_ENV_FILE'));
+        $file = $config['file'] ?: trim(getenv('CI_SHELL_ENV_FILE'));
         if (empty($file)) {
             throw new \InvalidArgumentException("file must be input");
         }
         $prefix  = 'CI_' . strtoupper($env) . '_';
-        $content = "";
+        $content = "export APP_ENV \"{$env}\"" . PHP_EOL;
         foreach ($this->getEnvByPrefix($prefix) as $k => $v) {
             $content .= "export {$k}=\"{$v}\";" . PHP_EOL;
         }
