@@ -132,7 +132,7 @@ class Build implements PluginInterface, EventSubscriberInterface
             throw new \InvalidArgumentException("file must be input");
         }
         $prefix  = 'CI_' . strtoupper($env) . '_';
-        $content = "export APP_ENV \"{$env}\"" . PHP_EOL;
+        $content = "export APP_ENV=\"{$env}\"" . PHP_EOL;
         foreach ($this->getEnvByPrefix($prefix) as $k => $v) {
             $content .= "export {$k}=\"{$v}\";" . PHP_EOL;
         }
