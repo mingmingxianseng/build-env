@@ -82,7 +82,7 @@ class Build implements PluginInterface, EventSubscriberInterface
             throw new \InvalidArgumentException("file must be input");
         }
         $prefix  = 'CI_' . strtoupper($env) . '_';
-        $content = "fastcgi_param APP_ENV {$env}" . PHP_EOL;
+        $content = "fastcgi_param APP_ENV {$env};" . PHP_EOL;
         foreach ($this->getEnvByPrefix($prefix) as $k => $v) {
             $content .= "fastcgi_param {$k} {$v};" . PHP_EOL;
         }
@@ -134,7 +134,7 @@ class Build implements PluginInterface, EventSubscriberInterface
         $prefix  = 'CI_' . strtoupper($env) . '_';
         $content = "export APP_ENV=\"{$env}\"" . PHP_EOL;
         foreach ($this->getEnvByPrefix($prefix) as $k => $v) {
-            $content .= "export {$k}=\"{$v}\";" . PHP_EOL;
+            $content .= "export {$k}=\"{$v}\"" . PHP_EOL;
         }
         $rs = file_put_contents($file, $content);
 
