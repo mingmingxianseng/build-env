@@ -144,11 +144,29 @@ class Build implements PluginInterface, EventSubscriberInterface
         $this->io->write('[ ok ] build shell env');
     }
 
+    public function buildAuthorizedKeys(Event $event)
+    {
+        $event->stopPropagation();
+        $keys = getenv('CI_AUTHORIZED_KEYS');
+        if (empty($keys)) {
+            $this->io->write("no CI_AUTHORIZED_KEYS to build");
+        }
+        $config = $this->getComposerJson()['scripts']['build-authorized-keys'];
+        $file   = $config['file'] ?? './authorized_keys';
+        $rs     = file_put_contents($file, $keys);
+
+        if ($rs === false) {
+            throw new \RuntimeException(sprintf("%s write failed", $file));
+        }
+        $this->io->write('[ ok ] build authorized-keys');
+    }
+
     public static function getSubscribedEvents()
     {
         return array(
-            'build-nginx-env' => 'buildNginx',
-            'build-shell-env' => 'buildShellEnv',
+            'build-nginx-env'       => 'buildNginx',
+            'build-shell-env'       => 'buildShellEnv',
+            'build-authorized-keys' => 'buildAuthorizedKeys'
         );
     }
 
