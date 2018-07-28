@@ -1,0 +1,26 @@
+{
+  "name": "mmxs/build-env",
+  "description": "build env to config file",
+  "type": "composer-plugin",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Ming\\Component\\BuildEnv\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "MingMingChen",
+      "email": "mingming0929@136.com"
+    }
+  ],
+  "require": {
+    "composer-plugin-api": "^1.0"
+  },
+  "require-dev": {
+    "composer/composer": "^1.0.2"
+  },
+  "extra": {
+    "class": "Ming\\Component\\BuildEnv\\Build"
+  }
+}
