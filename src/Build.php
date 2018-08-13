@@ -161,12 +161,40 @@ class Build implements PluginInterface, EventSubscriberInterface
         $this->io->write('[ ok ] build authorized-keys');
     }
 
+    public function buildYaml(Event $event)
+    {
+        $event->stopPropagation();
+        $env = trim(getenv('CI_APP_ENV'));
+        if (empty($env)) {
+            $this->io->write("no app_env jumped build yaml config");
+
+            return;
+        }
+        $config = getenv("CI_{$env}_CONFIG_YAML");
+
+        if (empty($config)) {
+            $this->io->write("no YAML_CONFIG to build");
+
+            return;
+        }
+        $path = $this->getComposerJson()['scripts']['build-yaml']['path'] ?? '';
+        if (empty($path)) {
+            throw new \RuntimeException('build-yaml.path must be input.');
+        }
+        $rs = file_put_contents($path, $config);
+        if ($rs === false) {
+            throw new \RuntimeException(sprintf("%s write failed", $path));
+        }
+        $this->io->write('[ ok ] build-yaml');
+    }
+
     public static function getSubscribedEvents()
     {
         return array(
             'build-nginx-env'       => 'buildNginx',
             'build-shell-env'       => 'buildShellEnv',
-            'build-authorized-keys' => 'buildAuthorizedKeys'
+            'build-authorized-keys' => 'buildAuthorizedKeys',
+            'build-yaml'            => 'buildYaml'
         );
     }
 
